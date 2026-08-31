@@ -1,0 +1,15 @@
+package com.razorpay.recovery.model.enums;
+
+public enum FailureReason {
+    INSUFFICIENT_FUNDS,
+    BANK_TIMEOUT,
+    NETWORK_ERROR,
+    DO_NOT_HONOR,
+    CARD_EXPIRED,
+    INVALID_VPA,
+    OTP_TIMEOUT,
+    RISK_THRESHOLD_BREACH,
+    CHECKOUT_ABANDONED,
+    EMANDATE_NOT_REGISTERED,
+    INVOICE_OVERDUE
+}

@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-recovery_db}
+      POSTGRES_USER: ${POSTGRES_USER:-recovery_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-recovery_pass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-recovery_user} -d $${POSTGRES_DB:-recovery_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-recovery_db}
+      POSTGRES_USER: ${POSTGRES_USER:-recovery_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-recovery_pass}
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
