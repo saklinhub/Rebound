@@ -4,7 +4,6 @@
 ![Rebound Dashboard UI](docs/dashboard.png)
 
 ### 📸 Project Showcase
-*Drop your additional screenshots here by replacing the files or links:*
 <div style="display: flex; gap: 10px;">
   <img src="docs/audit-log.png" alt="Audit Log Deep Dive" width="48%">
   <img src="docs/razorpay-link.png" alt="Live Razorpay Gateway Integration" width="48%">
