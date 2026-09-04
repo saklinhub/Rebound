@@ -149,6 +149,7 @@ public class AgentOrchestrationService {
             diagnosis = "Automated rule triggered escalation.";
             isFallback = true;
             confidence = 100;
+            finalMessage = "Notice: This transaction met rigid failure constraints and has been escalated directly to a human agent.";
         } else {
             try {
                 AgentDecisionDTO decision = geminiService.callGemini(t, allowedInterventions, stoppingRules, geminiApiKey);

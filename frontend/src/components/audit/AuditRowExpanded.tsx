@@ -35,7 +35,7 @@ export const AuditRowExpanded: React.FC<{ transaction: Transaction }> = ({ trans
     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
       
       {/* AI Reasoning Panel */}
-      <div className="space-y-4 rounded-lg bg-surface border border-border p-4">
+      <div className="space-y-4 rounded-lg bg-surface border border-border p-4 flex flex-col h-full justify-between">
         <h4 className="flex items-center gap-2 text-accent-blue font-semibold text-sm">
           <BrainCircuit className="w-4 h-4" /> AI Diagnostics & Reasoning
         </h4>
@@ -82,7 +82,7 @@ export const AuditRowExpanded: React.FC<{ transaction: Transaction }> = ({ trans
         )}
 
         {/* Technical Data Pane */}
-        <div className="rounded-lg bg-surface border border-border p-4 flex flex-col h-full">
+        <div className="rounded-lg bg-surface border border-border p-4 flex flex-col">
             <h4 className="flex items-center gap-2 text-text-primary font-semibold text-sm mb-3">
               <Cpu className="w-4 h-4" /> Execution Trace
             </h4>
