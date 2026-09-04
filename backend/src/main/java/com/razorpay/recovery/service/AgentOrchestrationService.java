@@ -169,7 +169,7 @@ public class AgentOrchestrationService {
             } catch (Exception e) {
                 log.warn("Gemini Rate Limit hit for transaction {}, applying demo fallback", t.getId());
                 // Hackathon Demo: Bypass Google 15 RPM limit by simulating accurate AI logic 
-                String[] demoTriggers = {"ROUTE_TO_UPI", "CART_RECOVERY_LINK", "SEND_DISCOUNT"};
+                String[] demoTriggers = {"ROUTE_TO_UPI", "SEND_CART_LINK", "SEND_UPDATE_LINK"};
                 intervention = demoTriggers[Math.abs(t.getId().hashCode()) % 3];
                 isFallback = true;
                 diagnosis = "AI Rate limit exceeded (15 RPM). Simulating optimal intervention.";
@@ -182,8 +182,13 @@ public class AgentOrchestrationService {
         t.setAgentDiagnosis(diagnosis);
         t.setAgentIntervention(intervention);
         
-        if (intervention != null && (intervention.equals("ROUTE_TO_UPI") || intervention.equals("CART_RECOVERY_LINK") || intervention.equals("SEND_DISCOUNT"))) {
-            // == RAZORPAY LIVE INTEGRATION ==
+        // == RAZORPAY LIVE INTEGRATION ==
+        List<String> linkInterventions = List.of(
+            "ROUTE_TO_UPI", "ROUTE_TO_NETBANKING", 
+            "SEND_CART_LINK", "SEND_UPDATE_LINK", "SEND_OFFER"
+        );
+        
+        if (intervention != null && linkInterventions.contains(intervention)) {
             String shortUrl = razorpayService.generatePaymentLink(t, "Rebound Recovery: " + intervention);
             finalMessage = finalMessage + "\n\n[Live Payment Link generated]: " + shortUrl;
         }
