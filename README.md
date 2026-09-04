@@ -3,6 +3,13 @@
 
 ![Rebound Dashboard UI](docs/dashboard.png)
 
+### 📸 Project Showcase
+*Drop your additional screenshots here by replacing the files or links:*
+<div style="display: flex; gap: 10px;">
+  <img src="docs/audit-log.png" alt="Audit Log Deep Dive" width="48%">
+  <img src="docs/razorpay-link.png" alt="Live Razorpay Gateway Integration" width="48%">
+</div>
+
 ## 🚨 The Problem: Static Rules Lose Money
 Digital businesses lose up to 30% of their top-line revenue to a fragmented funnel: failed payments, abandoned checkouts, passive subscription churn, and overdue B2B invoices. 
 
