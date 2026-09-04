@@ -18,7 +18,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({ transaction: t
   const accentColorClass = WORKFLOW_COLORS[t.workflow]
 
   return (
-    <div className="bg-surface rounded-lg p-3 border border-border shadow-sm transform transition-all duration-300 relative overflow-hidden group hover:border-border-subtle">
+    <div className="shrink-0 bg-surface rounded-lg p-3 border border-border shadow-sm transform transition-all duration-300 relative overflow-hidden group hover:border-border-subtle">
       {/* Accent left border */}
       <div className={`absolute left-0 top-0 bottom-0 w-1 ${accentColorClass}`} />
       
