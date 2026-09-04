@@ -36,6 +36,7 @@ public class AgentOrchestrationService {
     private final GeminiService geminiService;
     private final RecoverySimulationService simulationService;
     private final WebSocketNotificationService wsService;
+    private final RazorpayService razorpayService;
     private final ObjectMapper objectMapper;
     private final List<WorkflowHandler> workflowHandlers;
 
@@ -136,11 +137,12 @@ public class AgentOrchestrationService {
         List<String> allowedInterventions = handler.getAllowedInterventions(t);
         String stoppingRules = handler.getStoppingRulesText(t);
         
-        String intervention;
+        String intervention = null;
         Integer confidence = null;
-        String diagnosis;
+        String diagnosis = null;
         boolean isFallback = false;
         String rawResponse = null;
+        String finalMessage = "";
         
         if (handler.shouldEscalate(t)) {
             intervention = handler.applyFallbackIntervention(t);
@@ -158,22 +160,31 @@ public class AgentOrchestrationService {
                 confidence = decision.getConfidence();
                 diagnosis = decision.getDiagnosis();
                 rawResponse = objectMapper.writeValueAsString(decision);
+                finalMessage = decision.getMessageToCustomer() != null ? decision.getMessageToCustomer() : "";
                 
-                t.setAgentConfidence(confidence);
-                t.setAgentDiagnosis(diagnosis);
-                t.setAgentIntervention(intervention);
-                t.setAgentMessage(decision.getMessageToCustomer());
                 t.setAgentReasoning(decision.getReasoning());
                 t.setRiskFlag(decision.isRiskFlag());
                 
             } catch (Exception e) {
-                log.warn("Gemini call failed for transaction {}, applying fallback", t.getId());
+                log.error("Gemini AI Engine failed for transaction {}: {}", t.getId(), e.getMessage());
                 intervention = handler.applyFallbackIntervention(t);
                 isFallback = true;
-                diagnosis = "Rule-based fallback applied due to AI failure.";
-                confidence = 70;
+                diagnosis = "System encountered AI provider error. Escalated to manual fallback.";
+                confidence = 100;
+                finalMessage = "Notice: This transaction has been automatically escalated to a human agent due to system load.";
             }
         }
+
+        t.setAgentConfidence(confidence);
+        t.setAgentDiagnosis(diagnosis);
+        t.setAgentIntervention(intervention);
+        
+        if (intervention != null && (intervention.equals("ROUTE_TO_UPI") || intervention.equals("CART_RECOVERY_LINK") || intervention.equals("SEND_DISCOUNT"))) {
+            String shortUrl = razorpayService.generatePaymentLink(t, "Rebound Recovery: " + intervention);
+            finalMessage = finalMessage + "\n\n[Live Payment Link generated]: " + shortUrl;
+        }
+        
+        t.setAgentMessage(finalMessage);
 
         t.setStatus(TransactionStatus.INTERVENING);
         transactionRepository.save(t);
