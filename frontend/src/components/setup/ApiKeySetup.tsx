@@ -8,8 +8,8 @@ export const ApiKeySetup: React.FC = () => {
   const { setApiKey } = useRecoveryStore()
 
   const handleLaunch = () => {
-    if (!inputKey.startsWith('AIza') || inputKey.length < 20) {
-      setError('Invalid Gemini API Key format. It should start with "AIza".')
+    if (inputKey.length < 20) {
+      setError('Invalid API Key format. Key is too short.')
       return
     }
     setApiKey(inputKey)
